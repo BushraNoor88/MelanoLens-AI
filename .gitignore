@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+data/isic/images/*
+data/isic/masks/*
+data/results/*
+!data/isic/images/.gitkeep
+!data/isic/masks/.gitkeep
+!data/results/.gitkeep

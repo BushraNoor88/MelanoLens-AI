@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MelanoLens AI - About Project</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/components.css">
+</head>
+<body data-page="about.html">
+  <main id="main"><div class="container" style="max-width:900px">
+    <div class="page-title"><h1>About MelanoLens AI</h1><p>MelanoLens AI — Skin Lesion Boundary Enhancement and Detection Using Computer Vision. <em>See the Edges. Understand the Boundaries.</em></p></div>
+    <div class="alert warn"><strong>Medical disclaimer.</strong> MelanoLens AI is an educational computer vision project for experimental skin lesion boundary enhancement and image analysis. It is not a medical diagnostic tool. Its outputs must not be used to diagnose skin cancer or make treatment decisions.</div>
+
+    <section class="card"><h2>Objective</h2>
+      <p>Lesion boundaries in dermoscopic images can be faint, blurry or noisy, and ordinary edge detection may give fragmented edges and background artifacts. The <b>Edge Booster</b> strengthens meaningful gradients before detection. The central question is: <em>does edge enhancement improve skin lesion boundary detection compared with conventional edge detection?</em> The app lets you answer it with real outputs and, when a reference mask exists, real metrics.</p></section>
+
+    <section class="card" style="margin-top:1rem"><h2>Techniques</h2>
+      <ul>
+        <li><b>Preprocessing:</b> grayscale conversion; Gaussian blur (Gaussian noise); median filter (impulse noise); bilateral filter (smoothing that keeps edges); CLAHE (local contrast); optional resizing and hair-artifact reduction (black-hat + inpainting).</li>
+        <li><b>Edge detectors:</b> Canny, Sobel, Prewitt (explicit kernels), Laplacian, and Laplacian of Gaussian.</li>
+        <li><b>Boundary extraction:</b> binary edge map → morphological closing/opening → external contours → area filtering → candidate selection → filled candidate mask.</li>
+        <li><b>Evaluation:</b> Dice, IoU, precision, recall, F1, Boundary F1 (with pixel tolerance), and an edge-map F1 against the reference boundary.</li>
+      </ul></section>
+
+    <section class="card" style="margin-top:1rem"><h2>Edge Booster mathematics</h2>
+      <p><b>Sobel gradient enhancement.</b> With horizontal and vertical gradients G<sub>x</sub> and G<sub>y</sub>:</p>
+      <div class="formula">G = sqrt(Gx² + Gy²)<br>I_enhanced = normalize(I + α · G)</div>
+      <p class="muted">G is first scaled to 0–255. α controls strength; α = 0 only stretches the contrast. Noise also has gradients, so large α amplifies noise.</p>
+      <p><b>Laplacian sharpening.</b> OpenCV's Laplacian kernel has a negative centre, so:</p>
+      <div class="formula">I_sharp = clip( I − s · ∇²I , 0, 255 )</div>
+      <p class="muted">A small Gaussian pre-blur limits noise amplification.</p>
+      <p><b>Morphological gradient.</b></p>
+      <div class="formula">G_morph = dilation(I) − erosion(I)      I_enhanced = normalize(I + α · G_morph)</div>
+      <p><b>Multi-scale (experimental).</b> Sobel responses at several Gaussian scales σ<sub>i</sub>, each normalised to 0–1, are combined with weights w<sub>i</sub>:</p>
+      <div class="formula">G_ms = Σ (w_i / Σw) · normalize(Sobel(Gauss(I, σ_i)))</div>
+      <p><b>Metrics.</b></p>
+      <div class="formula">Dice = 2TP / (2TP + FP + FN)    IoU = TP / (TP + FP + FN)<br>Precision = TP / (TP + FP)    Recall = TP / (TP + FN)</div>
+      <p class="muted">Enhancement can improve visual edge prominence but does not guarantee a more accurate segmentation.</p></section>
+
+    <section class="card" style="margin-top:1rem"><h2>Edge map, contour, mask</h2>
+      <ul><li><b>Edge map:</b> pixels where a detector responded.</li><li><b>Contour:</b> a traced outline around a connected edge region.</li>
+        <li><b>Binary mask:</b> the region filled inside a chosen contour. It is only a <em>candidate</em> lesion region derived from edges, not a ground truth and not clinically accurate.</li></ul></section>
+
+    <section class="card" style="margin-top:1rem"><h2>Dataset sources</h2>
+      <p>Images and optional reference masks can come from your own files or from the official <a href="https://www.isic-archive.com/" target="_blank" rel="noopener">ISIC Archive</a>. Access terms and image licences are set by the archive and by each release; read them for the release you download. Not every release includes segmentation masks. No dataset is bundled with this app and no dataset statistics are shown. Dataset browsing is added in the next project milestone.</p></section>
+
+    <section class="card" style="margin-top:1rem"><h2>Privacy and storage</h2>
+      <p>Everything runs on your computer. Uploaded images and generated results are stored in <code>data/results/&lt;result_id&gt;/</code>. Use "Delete stored result" in the workspace, or delete that folder, to remove them. Nothing is sent to third-party services. This app has no login and is intended for local educational use.</p></section>
+
+    <section class="card" style="margin-top:1rem"><h2>Known limitations</h2>
+      <ul><li>Edge-based masks fail on very low-contrast lesions, heavy hair, rulers or markers, and vignetting.</li>
+        <li>The largest contour may not be the lesion; check the candidate list.</li>
+        <li>Thresholds are not tuned automatically, so results depend on the settings you choose.</li>
+        <li>Metrics on a few images do not prove that enhancement helps in general.</li>
+        <li>This is not a clinically validated system.</li></ul></section>
+  </div></main>
+  <script src="js/app.js"></script>
+</body>
+</html>

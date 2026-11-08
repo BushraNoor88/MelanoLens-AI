@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MelanoLens AI - Upload</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/components.css">
+</head>
+<body data-page="upload.html">
+  <main id="main"><div class="container">
+    <div class="page-title"><h1>Upload Image</h1>
+      <p>Upload a dermoscopic skin lesion image (JPG, JPEG or PNG). It is processed on this computer only. You may also add a reference segmentation mask so the Evaluation page can compute metrics.</p></div>
+    <div class="alert info"><strong>Educational tool.</strong> Not a medical diagnostic system.</div>
+    <div class="grid cols-2" style="align-items:start">
+      <div>
+        <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose an image or drop it here">
+          <p><strong>Drag &amp; drop an image here</strong></p><p class="muted">or click to choose a file</p>
+          <input type="file" id="file-input" accept=".jpg,.jpeg,.png,image/jpeg,image/png" hidden>
+        </div>
+        <div class="field" style="margin-top:1rem">
+          <label for="mask-input">Reference mask (optional)</label>
+          <input type="file" id="mask-input" accept=".png,.jpg,.jpeg,image/png,image/jpeg">
+          <p class="muted">White = lesion, black = background. It should have the same aspect ratio as the image.</p>
+        </div>
+        <div id="messages" aria-live="polite"></div>
+        <div class="btn-row" style="margin-top:1rem">
+          <button class="btn primary" id="process-btn" type="button" disabled>Process Image</button>
+          <button class="btn ghost" id="clear-btn" type="button" disabled>Clear</button>
+        </div>
+        <div class="status" id="status" role="status"></div>
+      </div>
+      <div class="card">
+        <h3>Preview</h3>
+        <div class="preview-box" id="preview"><span class="muted">No image selected</span></div>
+        <dl class="info-list" id="info"></dl>
+      </div>
+    </div>
+  </div></main>
+  <script src="js/app.js"></script><script src="js/upload.js"></script>
+</body>
+</html>
